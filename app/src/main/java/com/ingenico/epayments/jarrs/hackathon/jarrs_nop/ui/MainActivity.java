@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.ServiceGenerator;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.Transfer;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.TransferList;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.InternetConnection;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.MyProperties;
 
 import org.fabiomsr.moneytextview.MoneyTextView;
 
@@ -33,7 +35,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-
     private final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -42,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
+        moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(),"€");
+        final TextView welcomeUserId = findViewById(R.id.welcome_user_home_textView);
+        welcomeUserId.setText(getString(R.string.welcome_user_string, MyProperties.getInstance().getLoggedInUserId()));
         final Button addMoneyButton = findViewById(R.id.add_money_button);
         final Button payButton = findViewById(R.id.pay_button);
         final Button receiveFundsButton = findViewById(R.id.receive_button);
@@ -73,16 +77,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Transaction transaction2 = db.TransactionDao().getTransactionByUuid(transaction1.getUuid());
 
-        Log.e(TAG,transaction2.toString());
+        Log.e(TAG, transaction2.toString());
 
         transaction2.setSynchronizedOnline(true);
         db.TransactionDao().update(transaction2);
 
 
-
         Transaction transaction3 = db.TransactionDao().getTransactionByUuid(transaction1.getUuid());
 
-        Log.e(TAG,transaction3.toString());
+        Log.e(TAG, transaction3.toString());
     }
 
     private void updateTransactions() {

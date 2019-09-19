@@ -20,6 +20,7 @@ import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.AppDatabase;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.Transaction;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcReceiverMessage;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcSenderMessage;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.MyProperties;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -113,13 +114,24 @@ public class NFCReceiverActivity extends AppCompatActivity {
         NfcReceiverMessage nfcReceiverMessage = NfcReceiverMessage.builder()
                 .uuid(nfcSenderMessage.getUuid())
                 .sender(nfcSenderMessage.getSender())
-                .receiver("abdoulah")
+                .receiver(MyProperties.getInstance().getLoggedInUserId())
                 .amount(nfcSenderMessage.getAmount())
                 .currency(nfcSenderMessage.getCurrency())
                 .transactionTime(nfcSenderMessage.getTransactionTime())
                 .build();
 
+        MyProperties myProperties = MyProperties.getInstance();
+        Log.e(TAG, "Updating balance: Prev Balance = " + myProperties.getBalance().toString() + " Transaction Amount =" + nfcReceiverMessage.getAmount());
+
+        myProperties.setBalance(myProperties.getBalance().add(BigDecimal.valueOf(Double.valueOf(nfcReceiverMessage.getAmount()))));
+        Log.e(TAG, "Updating balance: New Balance = " + myProperties.getBalance().toString());
+
         Log.e(TAG, "Sending response of original sender: " + nfcReceiverMessage.toString());
+        //TODO: send nfcReceiverMessage to sender over NFC.
+        myProperties.setReceiverMessage(nfcReceiverMessage);
+        Intent i = new Intent(this, NFCConfirmActivity.class);
+        startActivity(i);
+
     }
 
     private void saveToDatabase(NfcReceiverMessage nfcReceiverMessage) {
@@ -138,6 +150,13 @@ public class NFCReceiverActivity extends AppCompatActivity {
 
         db.TransactionDao().insert(transaction);
         Log.e(TAG, "Message saved to DB: ");
+
+        MyProperties myProperties = MyProperties.getInstance();
+        Log.e(TAG, "Updating balance: Prev Balance = " + myProperties.getBalance().toString() + " Transaction Amount =" + nfcReceiverMessage.getAmount());
+
+        myProperties.setBalance(myProperties.getBalance().subtract(BigDecimal.valueOf(Double.valueOf(nfcReceiverMessage.getAmount()))));
+        Log.e(TAG, "Updating balance: New Balance = " + myProperties.getBalance().toString());
+
     }
 
 
@@ -155,13 +174,14 @@ public class NFCReceiverActivity extends AppCompatActivity {
     // NFC device thus breaking a connection, as it's a short range
 
     public void enableForegroundDispatch(AppCompatActivity activity, NfcAdapter adapter) {
-
+        Log.e(TAG,"foreground dispatch enabled");
         // here we are setting up receiving activity for a foreground dispatch
         // thus if activity is already started it will take precedence over any other activity or app
         // with the same intent filters
 
 
         final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
+
         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         //

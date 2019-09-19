@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CustumDateFormatter {
+public class CustomDateFormatter {
 
     public static String getCurrentTime() {
         Date date = Calendar.getInstance().getTime();

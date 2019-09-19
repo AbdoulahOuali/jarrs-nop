@@ -19,7 +19,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         EasySplashScreen configSplash = new EasySplashScreen(SplashScreenActivity.this)
                 .withFullScreen()
-                .withTargetActivity(MainActivity.class)
+                .withTargetActivity(LoginActivity.class)
                 .withSplashTimeOut(3500)
                 .withHeaderText("N O P")
                 .withFooterText("JARRS Hackaton team 2019" + "\u00A9")

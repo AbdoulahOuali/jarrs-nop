@@ -76,3 +76,8 @@ android {
         implementation group: 'androidx.recyclerview', name: 'recyclerview', version: '1.0.0'
     }
 }
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+}

@@ -15,7 +15,8 @@ import com.google.gson.Gson;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.R;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.OutcomingNfcManager;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcSenderMessage;
-import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.CustumDateFormatter;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.CustomDateFormatter;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.MyProperties;
 
 import java.util.UUID;
 
@@ -72,10 +73,10 @@ public class NFCSenderActivity extends AppCompatActivity implements OutcomingNfc
     private void setOutGoingMessage() {
         NfcSenderMessage nfcSenderMessage = NfcSenderMessage.builder()
                 .uuid(UUID.randomUUID().toString())
-                .sender("sandip")
+                .sender(MyProperties.getInstance().getLoggedInUserId())
                 .amount(etOutcomingMessage.getText().toString())
                 .currency("EUR")
-                .transactionTime(CustumDateFormatter.getCurrentTime())
+                .transactionTime(CustomDateFormatter.getCurrentTime())
                 .build();
 
         Gson gson = new Gson();
