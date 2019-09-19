@@ -9,9 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.NFCSenderActivity">
+
+        </activity>
+        <activity android:name=".ui.NFCReceiverActivity">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/com.ingenico.epayments.jarrs.hackaton.oqp" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.ShowTransactionActivity" />
         <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/title_home_screen"
+            android:name=".ui.SplashScreenActivity"
+            android:label="@string/title_splash_screen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/title_registration_activity"
             android:parentActivityName=".ui.SplashScreenActivity">
 
             <!-- Parent activity meta-data to support API level 4+ -->
@@ -19,26 +40,31 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ingenico.epayments.jarrs.hackathon.jarrs_nop.ui.SplashScreenActivity" />
         </activity>
-        <activity android:name=".ui.NFCSenderActivity"></activity>
-        <activity android:name=".ui.NFCReceiverActivity">
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/com.ingenico.epayments.jarrs.hackathon.jarrs_nop" />
-            </intent-filter>
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="@string/title_home_screen"
+            android:parentActivityName=".ui.LoginActivity">
+
+            <!-- Parent activity meta-data to support API level 4+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ingenico.epayments.jarrs.hackathon.jarrs_nop.ui.LoginActivity" />
         </activity>
         <activity
-            android:name=".ui.SplashScreenActivity"
-            android:label="@string/title_splash_screen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:name=".ui.UserRegistrationActivity"
+            android:label="@string/title_registration_activity"
+            android:parentActivityName=".ui.LoginActivity">
+            <!-- Parent activity meta-data to support API level 4+ -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ingenico.epayments.jarrs.hackathon.jarrs_nop.ui.LoginActivity" />
         </activity>
+
     </application>
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="false" />
+
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

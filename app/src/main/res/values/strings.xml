@@ -12,4 +12,24 @@
     <string name="title_btn_set">Set Message</string>
     <string name="incoming_nfc_message">Incoming NFC message:</string>
     <string name="title_home_screen">home</string>
+    <string name="login">login</string>
+    <string name="submit_registration_button">register</string>
+    <string name="last_name_hint">Last name</string>
+    <string name="first_name_hint">First name</string>
+    <string name="enter_user_name_hint">Enter User Name</string>
+    <string name="enter_e_mail_address_hint">Enter E-mail address</string>
+    <string name="enter_password_hint">Enter password</string>
+    <string name="re_enter_password_hint">Re-enter password</string>
+    <string name="nfc_status">NFC: </string>
+    <string name="nfc_status_disabled">OFF</string>
+    <string name="nfc_status_enabled">ON</string>
+    <string name="add_money_string">Add funds</string>
+    <string name="enable_nfc">Enable/Disable NFC</string>
+    <string name="pay_button_string">send funds</string>
+    <string name="receive_funds_button_string">Receive Funds</string>
+    <string name="title_registration_activity">Create an account</string>
+    <string name="already_a_member_string">Already a member?</string>
+    <string name="title_login_activity">Log in</string>
+    <string name="no_account_string">No account?</string>
+    <string name="show_transactions_button_string">transactions</string>
 </resources>
