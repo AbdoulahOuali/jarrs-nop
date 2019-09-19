@@ -21,8 +21,8 @@ public class ServiceGenerator {
 
     private static OkHttpClient okHttpClient = okHttpClientBuilder.build();
 
-    public static <T> T createService(Class<T> serviceClass){
-        if(retrofit == null){
+    public static <T> T createService(Class<T> serviceClass) {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
                     .baseUrl(BASE_API_URL)

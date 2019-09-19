@@ -11,15 +11,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.R;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.AppDatabase;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.Transaction;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.ApiService;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.ServiceGenerator;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.Transfer;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.TransferList;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.InternetConnection;
 
 import org.fabiomsr.moneytextview.MoneyTextView;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -27,6 +31,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -46,7 +52,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         receiveFundsButton.setOnClickListener(this);
         showTransactions.setOnClickListener(this);
 
-        updateTransactions();
+        // updateTransactions();
+        testDatabase();
+    }
+
+    private void testDatabase() {
+        AppDatabase db = AppDatabase.getAppDBInstance(this.getApplicationContext());
+
+        Transaction transaction1 = Transaction.builder()
+                .uuid(UUID.randomUUID().toString())
+                .sender("sandip")
+                .receiver("abdoulah")
+                .amount(BigDecimal.TEN)
+                .currency("EUR")
+                .synchronizedOnline(false)
+                .transactionTime(new Date())
+                .build();
+
+        db.TransactionDao().insert(transaction1);
+
+        Transaction transaction2 = db.TransactionDao().getTransactionByUuid(transaction1.getUuid());
+
+        Log.e(TAG,transaction2.toString());
+
+        transaction2.setSynchronizedOnline(true);
+        db.TransactionDao().update(transaction2);
+
+
+
+        Transaction transaction3 = db.TransactionDao().getTransactionByUuid(transaction1.getUuid());
+
+        Log.e(TAG,transaction3.toString());
     }
 
     private void updateTransactions() {
@@ -60,12 +96,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .transactionTime("2019-09-19 10:23:45")
                         .build()))
                 .build();
+
+
         ApiService apiService = ServiceGenerator.createService(ApiService.class);
         Log.e(TAG, "Start calling method updateTransactions");
-        Call<Void> call = apiService.updateTransactions("sandip", transferList);
-        call.enqueue(new Callback<Void>() {
+
+        if (InternetConnection.checkConnection(getApplicationContext())) {
+            Log.e(TAG, "Good internet connection");
+        } else {
+            Log.e(TAG, "no internet connection");
+        }
+
+        Call<String> call = apiService.updateTransactions("sandip", transferList);
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     Log.e(TAG, "response succes");
                 } else {
@@ -74,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Log.e(TAG, t.getMessage());
             }
         });

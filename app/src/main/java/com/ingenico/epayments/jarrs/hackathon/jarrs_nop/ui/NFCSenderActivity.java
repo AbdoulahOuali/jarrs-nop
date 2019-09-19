@@ -3,6 +3,7 @@ package com.ingenico.epayments.jarrs.hackathon.jarrs_nop.ui;
 import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,10 +11,17 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.R;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.OutcomingNfcManager;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcSenderMessage;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.CustumDateFormatter;
+
+import java.util.UUID;
 
 public class NFCSenderActivity extends AppCompatActivity implements OutcomingNfcManager.NfcActivity {
+
+    private final String TAG = NFCSenderActivity.class.getSimpleName();
 
     private TextView tvOutcomingMessage;
     private EditText etOutcomingMessage;
@@ -62,8 +70,19 @@ public class NFCSenderActivity extends AppCompatActivity implements OutcomingNfc
     }
 
     private void setOutGoingMessage() {
-        String outMessage = this.etOutcomingMessage.getText().toString();
+        NfcSenderMessage nfcSenderMessage = NfcSenderMessage.builder()
+                .uuid(UUID.randomUUID().toString())
+                .sender("sandip")
+                .amount(etOutcomingMessage.getText().toString())
+                .currency("EUR")
+                .transactionTime(CustumDateFormatter.getCurrentTime())
+                .build();
+
+        Gson gson = new Gson();
+        String outMessage = gson.toJson(nfcSenderMessage);
+        Log.e(TAG, "sending message: " + outMessage);
         this.tvOutcomingMessage.setText(outMessage);
+        Log.e(TAG, "Message sent: " + outMessage);
     }
 
     @Override

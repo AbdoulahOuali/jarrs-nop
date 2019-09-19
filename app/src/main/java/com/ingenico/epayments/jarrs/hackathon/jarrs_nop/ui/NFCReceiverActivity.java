@@ -8,16 +8,28 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.R;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.AppDatabase;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.Transaction;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcReceiverMessage;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean.NfcSenderMessage;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class NFCReceiverActivity extends AppCompatActivity {
 
     public static final String MIME_TEXT_PLAIN = "text/plain";
+
+    private static Gson gson = new Gson();
+    private final String TAG = NFCReceiverActivity.class.getSimpleName();
 
     private TextView tvIncomingMessage;
     private NfcAdapter nfcAdapter;
@@ -83,7 +95,49 @@ public class NFCReceiverActivity extends AppCompatActivity {
 
             String inMessage = new String(ndefRecord_0.getPayload());
             this.tvIncomingMessage.setText(inMessage);
+
+            Log.e(TAG, "Received Message: " + inMessage);
+
+            if (inMessage.contains("receiver")) {
+                NfcReceiverMessage nfcReceiverMessage = gson.fromJson(inMessage, NfcReceiverMessage.class);
+                saveToDatabase(nfcReceiverMessage);
+            } else {
+                NfcSenderMessage nfcSenderMessage = gson.fromJson(inMessage, NfcSenderMessage.class);
+                sendResponse(nfcSenderMessage);
+            }
         }
+    }
+
+    private void sendResponse(NfcSenderMessage nfcSenderMessage) {
+        Log.e(TAG, "Sending response of received message: " + nfcSenderMessage.toString());
+        NfcReceiverMessage nfcReceiverMessage = NfcReceiverMessage.builder()
+                .uuid(nfcSenderMessage.getUuid())
+                .sender(nfcSenderMessage.getSender())
+                .receiver("abdoulah")
+                .amount(nfcSenderMessage.getAmount())
+                .currency(nfcSenderMessage.getCurrency())
+                .transactionTime(nfcSenderMessage.getTransactionTime())
+                .build();
+
+        Log.e(TAG, "Sending response of original sender: " + nfcReceiverMessage.toString());
+    }
+
+    private void saveToDatabase(NfcReceiverMessage nfcReceiverMessage) {
+
+        Log.e(TAG, "Saving message to DB: " + nfcReceiverMessage.toString());
+        AppDatabase db = AppDatabase.getAppDBInstance(this.getApplicationContext());
+
+        Transaction transaction = Transaction.builder()
+                .uuid(nfcReceiverMessage.getUuid())
+                .sender(nfcReceiverMessage.getSender())
+                .receiver(nfcReceiverMessage.getReceiver())
+                .transactionTime(new Date())
+                .amount(BigDecimal.valueOf(Double.valueOf(nfcReceiverMessage.getAmount())))
+                .currency(nfcReceiverMessage.getCurrency())
+                .build();
+
+        db.TransactionDao().insert(transaction);
+        Log.e(TAG, "Message saved to DB: ");
     }
 
 

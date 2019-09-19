@@ -1,5 +1,14 @@
 package com.ingenico.epayments.jarrs.hackathon.jarrs_nop.nfc.bean;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class NfcReceiverMessage {
 
     private String uuid;

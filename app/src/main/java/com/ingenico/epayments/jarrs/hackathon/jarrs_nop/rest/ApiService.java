@@ -13,8 +13,9 @@ public interface ApiService {
     Retrofit get annotation with our URL
     And our method that will return us the List of ContactList
     */
-    @POST("/api/v1/transaction/batch-transfer/{userId}")
-    Call<Void> updateTransactions(@Path("userId") String userId, @Body TransferList transferList);
+    @POST("api/v1/transaction/batch-transfer/{userId}")
+    Call<String> updateTransactions(@Path("userId") String userId, @Body TransferList transferList);
+
 
 
 }
