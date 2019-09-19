@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">nop</string>
+    <string name="add_funds_string">add funds</string>
+    <string name="receive_funds_string">receive funds</string>
+    <string name="send_funds_string">send funds</string>
+    <string name="show_transactions_string">transactions</string>
+    <string name="welcome_user_string">Welcome, userId</string>
+    <string name="message_beaming_complete">Beaming complete</string>
+    <string name="title_splash_screen">Welcome</string>
+</resources>

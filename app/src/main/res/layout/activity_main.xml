@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backGroundWhite"
+        tools:context=".activity.MainActivity">
+
+        <Button
+            android:id="@+id/add_money_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="38dp"
+            android:background="@drawable/custom_button"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/add_funds_string"
+            android:textColor="@color/backGroundWhite"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/pay_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/receive_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="38dp"
+            android:background="@drawable/custom_button"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/receive_funds_string"
+            android:textColor="@color/backGroundWhite"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/show_transactions_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/pay_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="39dp"
+            android:background="@drawable/custom_button"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/send_funds_string"
+            android:textColor="@color/backGroundWhite"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/receive_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/show_transactions_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="64dp"
+            android:background="@drawable/custom_button"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/show_transactions_string"
+            android:textColor="@color/backGroundWhite"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <TextView
+            android:id="@+id/welcome_user_home_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="38dp"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/welcome_user_string"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/money_user_textView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <org.fabiomsr.moneytextview.MoneyTextView
+            android:id="@+id/money_user_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="156dp"
+            app:amount="0.00"
+            app:baseTextColor="@color/ingenicoTurquoise"
+            app:baseTextSize="54sp"
+            app:decimalDigitsTextSize="30sp"
+            app:decimalGravity="bottom"
+            app:decimalMargin="6dp"
+            app:decimalSeparator=","
+            app:includeDecimalSeparator="true"
+            app:layout_constraintBottom_toTopOf="@id/add_money_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:symbol="\u20AC"
+            app:symbolGravity="start|top"
+            app:symbolMargin="6dp"
+            app:symbolTextSize="30sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
