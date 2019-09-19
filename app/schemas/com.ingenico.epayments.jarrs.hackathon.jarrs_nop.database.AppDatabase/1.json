@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ae3ac4b5f67680db35617387ac277326",
+    "identityHash": "88cbdc2fe41bee0a154c8111434c1fc7",
     "entities": [
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `user_id` TEXT, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `email` TEXT NOT NULL, `balance` TEXT NOT NULL, `currency` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `user_id` TEXT, `first_name` TEXT NOT NULL, `last_name` TEXT NOT NULL, `email` TEXT NOT NULL, `balance` INTEGER NOT NULL, `currency` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -41,7 +41,7 @@
           {
             "fieldPath": "balance",
             "columnName": "balance",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -71,7 +71,7 @@
       },
       {
         "tableName": "transactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `uuid` TEXT NOT NULL, `sender` TEXT NOT NULL, `receiver` TEXT NOT NULL, `transactionTime` INTEGER NOT NULL, `amount` TEXT NOT NULL, `currency` TEXT NOT NULL, `senderUpdateTime` INTEGER, `receiverUpdateTime` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `uuid` TEXT NOT NULL, `sender` TEXT NOT NULL, `receiver` TEXT NOT NULL, `transactionTime` INTEGER NOT NULL, `amount` INTEGER NOT NULL, `currency` TEXT NOT NULL, `synchronizedOnline` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -106,7 +106,7 @@
           {
             "fieldPath": "amount",
             "columnName": "amount",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -116,16 +116,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "senderUpdateTime",
-            "columnName": "senderUpdateTime",
+            "fieldPath": "synchronizedOnline",
+            "columnName": "synchronizedOnline",
             "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "receiverUpdateTime",
-            "columnName": "receiverUpdateTime",
-            "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -141,7 +135,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae3ac4b5f67680db35617387ac277326')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '88cbdc2fe41bee0a154c8111434c1fc7')"
     ]
   }
 }

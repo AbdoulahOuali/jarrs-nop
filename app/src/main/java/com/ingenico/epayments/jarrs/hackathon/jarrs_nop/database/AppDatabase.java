@@ -7,14 +7,15 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.converter.BigDecimalConverter;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.converter.DateConverter;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.dao.TransactionDao;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.dao.UserDao;
-import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.converter.DateConverter;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.Transaction;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.User;
 
 @Database(entities = {User.class, Transaction.class}, version = 1)
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class, BigDecimalConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     //singleton db instance

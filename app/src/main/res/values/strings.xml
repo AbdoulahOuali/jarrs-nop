@@ -7,4 +7,9 @@
     <string name="welcome_user_string">Welcome, userId</string>
     <string name="message_beaming_complete">Beaming complete</string>
     <string name="title_splash_screen">Welcome</string>
+    <string name="hint_your_message">Your message</string>
+    <string name="label_your_message">Outgoing NFC message:</string>
+    <string name="title_btn_set">Set Message</string>
+    <string name="incoming_nfc_message">Incoming NFC message:</string>
+    <string name="title_home_screen">home</string>
 </resources>

@@ -23,9 +23,9 @@ public interface TransactionDao {
     @Delete
     void delete(Transaction transaction);
 
-    @Query("SELECT uuid,sender,receiver,amount,currency,transactionTime FROM transactions WHERE receiver =:userId")
+    @Query("SELECT * FROM transactions WHERE receiver =:userId")
     LiveData<List<Transaction>> getReceivedTransactions(String userId);
 
-    @Query("SELECT uuid,sender,receiver,amount,currency,transactionTime FROM transactions WHERE sender =:userId")
+    @Query("SELECT * FROM transactions WHERE sender =:userId")
     LiveData<List<Transaction>> getSentTransactionById(String userId);
 }

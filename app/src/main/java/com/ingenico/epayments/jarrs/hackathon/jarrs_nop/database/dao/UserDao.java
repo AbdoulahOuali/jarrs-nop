@@ -10,7 +10,6 @@ import androidx.room.Update;
 
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.database.entity.User;
 
-
 @Dao
 public interface UserDao {
 
@@ -23,10 +22,10 @@ public interface UserDao {
     @Delete
     void delete(User user);
 
-    @Query("SELECT first_name,last_name,currency,balance FROM users WHERE first_name LIKE :first AND " +
+    @Query("SELECT * FROM users WHERE first_name LIKE :first AND " +
             "last_name LIKE :last LIMIT 1")
     LiveData<User> findByName(String first, String last);
 
-    @Query("SELECT first_name,last_name,currency,balance FROM users WHERE user_id =:usrId")
+    @Query("SELECT * FROM users WHERE user_id =:usrId")
     LiveData<User> findById(String usrId);
 }
