@@ -38,7 +38,6 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     private final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -53,14 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final TextView welcomeUserId = findViewById(R.id.welcome_user_home_textView);
         welcomeUserId.setText(getString(R.string.welcome_user_string, MyProperties.getInstance().getLoggedInUserId()));
 
-
-        final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
-
-        //String balance = RestUtil.getBalanceFromServer(myProperties.getLoggedInUserId(), getApplicationContext());
-        //myProperties.setBalance(BigDecimal.valueOf(Double.valueOf(balance)));
+        //final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
         getBalanceFromServer(myProperties.getLoggedInUserId(), getApplicationContext());
-
-       // moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
 
         final Button addMoneyButton = findViewById(R.id.add_money_button);
         final Button payButton = findViewById(R.id.pay_button);
@@ -99,9 +92,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 MyProperties myProperties = MyProperties.getInstance();
+                myProperties.setFirstName(response.body().getFirstName());
+                myProperties.setLastName(response.body().getLastName());
                 myProperties.setBalance(BigDecimal.valueOf(Double.valueOf(response.body().getBalance())));
+
+                final TextView welcomeUserId = findViewById(R.id.welcome_user_home_textView);
+                welcomeUserId.setText(getString(R.string.welcome_user_string, MyProperties.getInstance().getFirstName()));
+
                 final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
                 moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
+
                 Log.e(TAG, response.message() + ", gotten from server: " + response.raw());
             }
 
@@ -111,8 +111,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 MyProperties myProperties = MyProperties.getInstance();
                 myProperties.setBalance(BigDecimal.valueOf(1000));
                 myProperties.setLoggedInUserId(userId);
+                myProperties.setFirstName(userId);
+                myProperties.setLastName(userId);
+
+                final TextView welcomeUserId = findViewById(R.id.welcome_user_home_textView);
+                welcomeUserId.setText(getString(R.string.welcome_user_string, MyProperties.getInstance().getFirstName()));
+
                 final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
                 moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
+
                 Log.e(TAG, "Failed to get user from server, setting balance: 1000");
             }
         }));
@@ -246,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -271,6 +277,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 toastFundsReceived.show();
                 break;
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.e(TAG, "on post resume");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(TAG, "on start");
+        MyProperties myProperties = MyProperties.getInstance();
+        getBalanceFromServer(myProperties.getLoggedInUserId(), getApplicationContext());
     }
 
 
