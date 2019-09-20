@@ -1,5 +1,6 @@
 package com.ingenico.epayments.jarrs.hackathon.jarrs_nop.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,8 @@ import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.ApiService;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.ServiceGenerator;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.Transfer;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.TransferList;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.rest.bean.Usr;
+import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.CustomDateFormatter;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.InternetConnection;
 import com.ingenico.epayments.jarrs.hackathon.jarrs_nop.util.MyProperties;
 
@@ -26,6 +29,7 @@ import org.fabiomsr.moneytextview.MoneyTextView;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import retrofit2.Call;
@@ -39,13 +43,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        Log.e(TAG, "On create MainActivity ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
-        moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(),"€");
+        MyProperties myProperties = MyProperties.getInstance();
+
         final TextView welcomeUserId = findViewById(R.id.welcome_user_home_textView);
         welcomeUserId.setText(getString(R.string.welcome_user_string, MyProperties.getInstance().getLoggedInUserId()));
+
+
+        final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
+
+        //String balance = RestUtil.getBalanceFromServer(myProperties.getLoggedInUserId(), getApplicationContext());
+        //myProperties.setBalance(BigDecimal.valueOf(Double.valueOf(balance)));
+        getBalanceFromServer(myProperties.getLoggedInUserId(), getApplicationContext());
+
+       // moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
+
         final Button addMoneyButton = findViewById(R.id.add_money_button);
         final Button payButton = findViewById(R.id.pay_button);
         final Button receiveFundsButton = findViewById(R.id.receive_button);
@@ -57,8 +73,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         showTransactions.setOnClickListener(this);
 
         // updateTransactions();
-        testDatabase();
+//        updateSingleTransactionOnServer();
+
+//        testDatabase();
     }
+
+
+    public void getBalanceFromServer(String userId, Context context) {
+
+        ApiService apiService = ServiceGenerator.createService(ApiService.class);
+        if (InternetConnection.checkConnection(context)) {
+            Log.e(TAG, "Good internet connection");
+        } else {
+            Log.e(TAG, "no internet connection");
+        }
+
+        Call<Usr> call = apiService.getUserFromServer(userId);
+
+        call.enqueue((new Callback<Usr>() {
+            @Override
+            public void onResponse(Call<Usr> call, Response<Usr> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "http status code: " + response.code());
+                    Log.e(TAG, "http error: " + response.errorBody());
+
+                }
+                MyProperties myProperties = MyProperties.getInstance();
+                myProperties.setBalance(BigDecimal.valueOf(Double.valueOf(response.body().getBalance())));
+                final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
+                moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
+                Log.e(TAG, response.message() + ", gotten from server: " + response.raw());
+            }
+
+            @Override
+            public void onFailure(Call<Usr> call, Throwable t) {
+                Log.e(TAG, t.getMessage());
+                MyProperties myProperties = MyProperties.getInstance();
+                myProperties.setBalance(BigDecimal.valueOf(1000));
+                myProperties.setLoggedInUserId(userId);
+                final MoneyTextView moneyTextView = findViewById(R.id.money_user_textView);
+                moneyTextView.setAmount(MyProperties.getInstance().getBalance().floatValue(), "€");
+                Log.e(TAG, "Failed to get user from server, setting balance: 1000");
+            }
+        }));
+
+
+    }
+
 
     private void testDatabase() {
         AppDatabase db = AppDatabase.getAppDBInstance(this.getApplicationContext());
@@ -87,6 +148,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.e(TAG, transaction3.toString());
     }
+
+    private void updateSingleTransactionOnServer() {
+        Transfer transfer = Transfer.builder()
+                .uuid(UUID.randomUUID().toString())
+                .fromUserId("abdoulah")
+                .toUserId("sandip")
+                .amount(BigDecimal.valueOf(50))
+                .currency("EUR")
+                .transactionTime(CustomDateFormatter.getCurrentTime())
+                .build();
+        Log.e(TAG, "created transaction: " + transfer.toString());
+
+        ApiService apiService = ServiceGenerator.createService(ApiService.class);
+        Log.e(TAG, "Start calling method updateSingleTransactionOnServer");
+
+        if (InternetConnection.checkConnection(getApplicationContext())) {
+            Log.e(TAG, "Good internet connection");
+        } else {
+            Log.e(TAG, "no internet connection");
+        }
+
+        Call<Transfer> call = apiService.updateSingleTransaction(transfer.getFromUserId(), transfer);
+        call.enqueue(new Callback<Transfer>() {
+            @Override
+            public void onResponse(Call<Transfer> call, Response<Transfer> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "http status code: " + response.code());
+                    Log.e(TAG, "http error: " + response.errorBody());
+                    return;
+                }
+                Log.e(TAG, response.message() + ", posted to server: " + response.raw());
+
+            }
+
+            @Override
+            public void onFailure(Call<Transfer> call, Throwable t) {
+                Log.e(TAG, t.getMessage());
+            }
+        });
+    }
+
+    private void getTransactionsFromServer() {
+        ApiService apiService = ServiceGenerator.createService(ApiService.class);
+        if (InternetConnection.checkConnection(getApplicationContext())) {
+            Log.e(TAG, "Good internet connection");
+        } else {
+            Log.e(TAG, "no internet connection");
+        }
+
+
+        Call<List<Transfer>> call = apiService.getTransactionsFromServer();
+
+
+    }
+
 
     private void updateTransactions() {
         TransferList transferList = TransferList.builder()
@@ -130,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -155,4 +272,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+
 }
