@@ -80,20 +80,31 @@ public class NFCSenderActivity extends AppCompatActivity implements OutcomingNfc
     }
 
     private void setOutGoingMessage() {
+
+        String amount = etOutcomingMessage.getText().toString();
+
         NfcSenderMessage nfcSenderMessage = NfcSenderMessage.builder()
                 .uuid(UUID.randomUUID().toString())
                 .sender(MyProperties.getInstance().getLoggedInUserId())
-                .amount(etOutcomingMessage.getText().toString())
+                .amount(amount)
                 .currency("EUR")
                 .transactionTime(CustomDateFormatter.getCurrentTime())
                 .build();
 
-        Gson gson = new Gson();
-        String outMessage = gson.toJson(nfcSenderMessage);
-        Log.e(TAG, "sending message: " + outMessage);
-        updateSingleTransactionOnServer(nfcSenderMessage.getSender(), nfcSenderMessage.getAmount());
-        this.tvOutcomingMessage.setText(outMessage);
-        Log.e(TAG, "Message sent: " + outMessage);
+        MyProperties myProperties = MyProperties.getInstance();
+
+        if ( Double.valueOf(amount) > myProperties.getBalance().doubleValue() ) {
+            Log.e(TAG, "Insufficient Balance" );
+            this.tvOutcomingMessage.setText("Insufficient Balance");
+        } else {
+            this.tvOutcomingMessage.setText("Sending € "+amount);
+            Gson gson = new Gson();
+            String outMessage = gson.toJson(nfcSenderMessage);
+            Log.e(TAG, "sending message: " + outMessage);
+            updateSingleTransactionOnServer(nfcSenderMessage.getSender(), nfcSenderMessage.getAmount());
+            Log.e(TAG, "Message sent: " + outMessage);
+        }
+
     }
 
     @Override

@@ -57,12 +57,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final Button addMoneyButton = findViewById(R.id.add_money_button);
         final Button payButton = findViewById(R.id.pay_button);
-        final Button receiveFundsButton = findViewById(R.id.receive_button);
         final Button showTransactions = findViewById(R.id.show_transactions_button);
 
         addMoneyButton.setOnClickListener(this);
         payButton.setOnClickListener(this);
-        receiveFundsButton.setOnClickListener(this);
         showTransactions.setOnClickListener(this);
 
         // updateTransactions();
@@ -264,10 +262,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.pay_button:
                 Intent payIntent = new Intent(this, NFCSenderActivity.class);
                 startActivity(payIntent);
-                break;
-            case R.id.receive_button:
-                Intent receiveIntent = new Intent(this, NFCReceiverActivity.class);
-                startActivity(receiveIntent);
                 break;
             case R.id.show_transactions_button:
 //                Intent intent = new Intent(this,ShowTransactionActivity.class);
